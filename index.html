@@ -45,7 +45,7 @@
 <div id="overlay" class="overlay">
     <img id="gif" src="https://i.gifer.com/PSc.gif">
 </div>
-
+<audio id="notificationSound" src="path_to_your_audio_file.mp3" preload="auto"></audio>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
 <!-- The Firebase Realtime Database SDK -->
@@ -115,18 +115,24 @@
 }
 
 
-    function showGif() {
-        const overlay = document.getElementById('overlay');
-        overlay.style.visibility = 'visible';
-        overlay.style.opacity = '1';
+function showGif() {
+    const overlay = document.getElementById('overlay');
+    overlay.style.visibility = 'visible';
+    overlay.style.opacity = '1';
 
+    // Play the sound
+    const sound = document.getElementById('notificationSound');
+    sound.play();
+
+    // Hide the GIF after 5 seconds
+    setTimeout(() => {
+        overlay.style.opacity = '0';
         setTimeout(() => {
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                overlay.style.visibility = 'hidden';
-            }, 500); 
-        }, 5000);
-    }
+            overlay.style.visibility = 'hidden';
+        }, 500); 
+    }, 5000);
+}
+
 
     firebase.database().ref('conversions').on('child_added', function(snapshot) {
         let eventData = snapshot.val();
