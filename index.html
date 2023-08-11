@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Today's Online conversions</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+<div class="col-md-3">
+    <div class="fixed-header">
+        <h4>Deposits</h4>
+        <div class="fixed-header-content">
+            <div id="deposits"></div>
+        </div>
+    </div>
+</div>
+        <div class="col-md-3">
+            <div class="fixed-header">
+                <h4>Full payments</h4>
+                <div id="fullPayments"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="fixed-header">
+                <h4>Finance requests</h4>
+                <div id="financeRequests"></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="fixed-header">
+                <h4>Test Rides</h4>
+                <div id="testRides"></div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Overlay for GIF -->
+<div id="overlay" class="overlay">
+    <img id="gif" src="https://i.gifer.com/PSc.gif">
+</div>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-app.js"></script>
+<!-- The Firebase Realtime Database SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.0.0/firebase-database.js"></script>
+
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTLOvuWdeICqo6qgxVttAdKdLKoVnTRAE",
+        authDomain: "event-dashboard-eb651.firebaseapp.com",
+        databaseURL: "https://event-dashboard-eb651-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "event-dashboard-eb651",
+        storageBucket: "event-dashboard-eb651.appspot.com",
+        messagingSenderId: "1094614015251",
+        appId: "1:1094614015251:web:bc132921db10b611548ee6"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function generateCard(eventData) {
+    // Extract the country code
+    let countryCode;
+    if (eventData.country.includes(',')) {
+        countryCode = eventData.country.split(',')[1].trim().slice(0, 2);
+    } else {
+        countryCode = eventData.country.trim().slice(-2);
+    }
+
+    // Extract the date from the time
+    let date = new Date(eventData.time).toISOString().split('T')[0];
+
+    return `
+        <div class="card">
+            <span class="flag-icon flag-icon-${countryCode.toLowerCase()}"></span>
+            Country: ${countryCode.toUpperCase()}<br>
+            Date: ${date}<br>
+            Amount: ${eventData.amount}
+        </div>
+    `;
+}
+
+
+
+function getFlagClass(locationData) {
+    // Extract the country code (the last 2 characters before the comma or end)
+    let countryCode;
+    if (locationData.includes(',')) {
+        countryCode = locationData.split(',')[1].trim().slice(0, 2);
+    } else {
+        countryCode = locationData.trim().slice(-2);
+    }
+    return `flag-icon flag-icon-${countryCode.toLowerCase()}`;
+}
+
+
+
+function isToday(dateStr) {
+    const today = new Date();
+    today.setHours(0,0,0,0);  // Set today's time to midnight
+    const eventDate = new Date(dateStr);
+    eventDate.setHours(0,0,0,0); // Set event's time to midnight
+    return today.getTime() === eventDate.getTime();
+}
+
+
+    // Function to check if a given date is within the last 3 days including today
+    function isWithinLast3Days(dateStr) {
+        const today = new Date();
+        const eventDate = new Date(dateStr);
+        const timeDiff = today - eventDate; // difference in milliseconds
+        const daysDifference = timeDiff / (1000 * 60 * 60 * 24); // convert to days
+
+        // If it's today or the last 2 days (total 3 days)
+        return daysDifference < 3;
+    }
+
+    // Listen for changes to the conversions location in the database
+    firebase.database().ref('conversions').on('child_added', function(snapshot) {
+        let eventData = snapshot.val();
+
+        // Check if the eventData has a date and if it falls within the last 3 days
+        if (eventData.time && isWithinLast3Days(eventData.time)) {
+            let elementId;
+            switch (eventData.paymentType) {
+                case "Deposit":
+                    elementId = 'deposits';
+                    break;
+                case "Full payment":
+                    elementId = 'fullPayments';
+                    break;
+                case "Finance request":
+                    elementId = 'financeRequests';
+                    break;
+                case "Test ride":
+                    elementId = 'testRides';
+                    break;
+            }
+
+            // Add new card to the beginning of the container
+            const container = document.getElementById(elementId);
+            container.innerHTML = generateCard(eventData) + container.innerHTML;
+
+            // Call the function to show the GIF
+            showGif();
+        }
+    });
+</script>
+
+</body>
+</html>

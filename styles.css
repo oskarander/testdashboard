@@ -1,0 +1,95 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-image: url('https://cdn.sanity.io/images/n0u8owzc/production2/4b98a0a149cae742556ac6fff2ddd6f5c66f2097-1920x1080.jpg?rect=35,0,1851,1080&w=1200&h=700');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 960px;
+    text-align: center;  /* Center the text */
+}
+
+.card {
+    animation: card-fade-in-up 0.5s ease-out;
+    margin-bottom: 1rem;
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+@keyframes card-fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Add these styles for the overlay and gif */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear; 
+}
+
+#gif {
+    max-width: 100%;
+    max-height: 100%;
+}
+.title {
+  color: white;
+  font-size: 20px;
+}
+.fixed-header {
+  position: relative;
+  height: calc(100vh - 20px); /* assuming 20px for margins and other spacing */
+  overflow-y: scroll;
+  padding-top: 40px; /* space for the fixed header */
+}
+
+.fixed-header h4 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  z-index: 10; /* to ensure the header stays on top */
+}
+.card.today {
+  background-color: #28a745;  /* This is the green color for today's cards */
+}
+
+.card.previous {
+  background-color: #a9a9a9; /* This is the grey color for previous day's cards */
+}
+.flag-icon {
+  width: 20px;
+  height: 15px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
