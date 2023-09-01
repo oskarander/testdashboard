@@ -87,3 +87,17 @@ height: 15px;
 margin-right: 5px;
 vertical-align: middle;
 }
+
+#testRides .card {
+  height:70px;
+  overflow: hidden;
+  margin-bottom: 5px;
+  padding: 5px;
+  font-size: 0.8rem; /* Reduce the font size */
+  line-height: 1.2; /* Adjust the spacing between lines */
+}
+
+#testRides .card .flag-icon {
+  font-size: 0.7rem; /* Optional: You can adjust the flag size if needed */
+}
+
